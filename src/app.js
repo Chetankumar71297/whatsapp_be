@@ -28,7 +28,7 @@ app.use(express.json());
 //parse json request url
 app.use(express.urlencoded({ extended: true }));
 
-//sanitize request data
+//sanitize request data(prevent sql injection)
 app.use(mongoSanitize());
 
 //enable cookie parser
