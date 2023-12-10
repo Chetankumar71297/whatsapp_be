@@ -8,6 +8,7 @@ import compression from "compression";
 import fileUpload from "express-fileupload";
 import cors from "cors";
 import createHttpError from "http-errors";
+import routes from "./routes/index.js";
 
 //dotenv config
 dotenv.config();
@@ -48,9 +49,8 @@ app.use(
 //cors
 app.use(cors());
 
-app.get("/test", (req, res) => {
-  throw createHttpError.BadRequest("this route has an error");
-});
+//routes
+app.use("/app/v1", routes);
 
 app.use(async (req, res, next) => {
   next(createHttpError.NotFound("this route does not exist."));

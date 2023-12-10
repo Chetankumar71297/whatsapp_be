@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 8000;
 let server;
 server = app.listen(PORT, () => {
   logger.info(`server is listening at port ${PORT}`);
-  console.log("process id", process.pid);
 });
 
 //handle server errors
