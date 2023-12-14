@@ -50,7 +50,7 @@ app.use(
 app.use(cors());
 
 //routes
-app.use("/app/v1", routes);
+app.use("/api/v1", routes);
 
 app.use(async (req, res, next) => {
   next(createHttpError.NotFound("this route does not exist."));
