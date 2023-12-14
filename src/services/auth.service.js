@@ -1,11 +1,12 @@
 import createHttpError from "http-errors";
 import validator from "validator";
 import UserModel from "../models/userModel.js";
+import bcrypt from "bcrypt";
 
 //env variables
 const { DEFAULT_PICTURE, DEFAULT_STATUS } = process.env;
 
-export const createUser = async (userData, res) => {
+export const createUser = async (userData) => {
   const { name, email, picture, status, password } = userData;
 
   //check if fields are empty
@@ -67,6 +68,24 @@ export const createUser = async (userData, res) => {
     status: status || DEFAULT_STATUS,
     password,
   }).save();
+
+  return user;
+};
+
+export const signUser = async (email, password) => {
+  const user = await UserModel.findOne({ email: email.toLowerCase() }).lean();
+
+  //check if user exist
+  if (!user) {
+    throw createHttpError.NotFound("Invalid credentials.");
+  }
+
+  //compare password
+  let passwordMatches = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatches) {
+    throw createHttpError.NotFound("Invalid credentials");
+  }
 
   return user;
 };
