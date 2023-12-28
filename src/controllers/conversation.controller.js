@@ -3,7 +3,8 @@ import logger from "../configs/logger.config.js";
 import {
   createConversation,
   doesConversationExist,
-  populatedConversation,
+  getUserConversations,
+  populateConversation,
 } from "../services/conversation.service.js";
 import { findUser } from "../services/user.service.js";
 
@@ -36,13 +37,23 @@ export const createOpenConversation = async (req, res, next) => {
         users: [sender_id, receiver_id],
       };
       const newConvo = await createConversation(convoData);
-      const populatedConvo = await populatedConversation(
+      const populatedConvo = await populateConversation(
         newConvo._id,
         "users",
         "-password"
       );
       res.status(200).json(populatedConvo);
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getConversations = async (req, res, next) => {
+  try {
+    const user_id = req.user.userId; //here user is added by authMiddleware, user is payload({userId: newUser._id} returned by jwt.verify. for more details look token generation step in authController)
+    const conversations = await getUserConversations(user_id);
+    res.status(200).json(conversations);
   } catch (error) {
     next(error);
   }
