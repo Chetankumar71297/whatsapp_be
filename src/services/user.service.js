@@ -9,9 +9,11 @@ export const findUser = async (userId) => {
   return user;
 };
 
-export const searchUsers = async (keyword) => {
+export const searchUsers = async (keyword, userId) => {
   const users = await UserModel.find({
     name: { $regex: keyword, $options: "i" },
+  }).find({
+    _id: { $ne: userId },
   });
   return users;
 };
