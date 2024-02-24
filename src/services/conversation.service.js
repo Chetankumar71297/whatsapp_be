@@ -11,7 +11,7 @@ export const doesConversationExist = async (sender_id, receiver_id) => {
   })
     .populate("users", "-password")
     .populate("latestMessage");
-  console.log(convos);
+
   if (!convos) throw createHttpError.BadRequest("Oops...Something went wrong");
 
   //populate message model
