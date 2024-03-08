@@ -1,7 +1,25 @@
-export default function (socket) {
+let onlineUsers = []; //every time onlineUsers is updated it will be send to every socket
+
+export default function (socket, io) {
   //user joins or open the application
   socket.on("join", (user) => {
     socket.join(user); //user is actually user id
+
+    //add joined users to onlineUsers array
+    if (!onlineUsers.some((u) => u.userId === user)) {
+      onlineUsers.push({ userId: user, socketId: socket.id });
+    }
+
+    //send onlineUsers array to the client
+    io.emit("get online users", onlineUsers);
+  });
+
+  //remove the users from the onlineUsers when user is disconnected
+  socket.on("disconnect", () => {
+    onlineUsers = onlineUsers.filter((u) => u.socketId !== socket.id);
+
+    //send onlineUsers array to the client
+    io.emit("get online users", onlineUsers);
   });
 
   //join a conversation room
@@ -17,5 +35,15 @@ export default function (socket) {
       if (user._id === message.sender._id) return;
       socket.in(user._id).emit("received message", message);
     });
+  });
+
+  //typing
+  socket.on("typing", (conversation) => {
+    console.log(`typing in ${conversation}`);
+    socket.in(conversation).emit("typing", conversation);
+  });
+  socket.on("stop typing", (conversation) => {
+    console.log(`stop typing in ${conversation}`);
+    socket.in(conversation).emit("stop typing");
   });
 }
