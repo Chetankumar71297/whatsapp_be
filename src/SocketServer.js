@@ -12,6 +12,8 @@ export default function (socket, io) {
 
     //send onlineUsers array to the client
     io.emit("get online users", onlineUsers);
+    //send socket id
+    io.emit("setup socket", socket.id);
   });
 
   //remove the users from the onlineUsers when user is disconnected
