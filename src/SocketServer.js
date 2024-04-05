@@ -48,4 +48,16 @@ export default function (socket, io) {
     console.log(`stop typing in ${conversation}`);
     socket.in(conversation).emit("stop typing");
   });
+
+  //call
+  socket.on("call user", (data) => {
+    let userId = data.userToCall;
+    let userSocketId = onlineUsers.find((user) => user.userId == userId);
+    io.to(userSocketId.socketId).emit("friend calling", {
+      signal: data.signal,
+      from: data.from,
+      name: data.name,
+      picture: data.picture,
+    });
+  });
 }
