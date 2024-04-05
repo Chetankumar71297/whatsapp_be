@@ -60,4 +60,8 @@ export default function (socket, io) {
       picture: data.picture,
     });
   });
+
+  socket.on("answer call", (data) => {
+    io.to(data.respondingTo).emit("call accepted", data.signal);
+  });
 }
