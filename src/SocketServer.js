@@ -64,4 +64,8 @@ export default function (socket, io) {
   socket.on("answer call", (data) => {
     io.to(data.respondingTo).emit("call accepted", data.signal);
   });
+
+  socket.on("end call", (id) => {
+    io.to(id).emit("end call");
+  });
 }
