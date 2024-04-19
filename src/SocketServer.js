@@ -13,7 +13,7 @@ export default function (socket, io) {
     //send onlineUsers array to the client
     io.emit("get online users", onlineUsers);
     //send socket id
-    io.emit("setup socket", socket.id);
+    io.to(socket.id).emit("setup socket", socket.id);
   });
 
   //remove the users from the onlineUsers when user is disconnected
@@ -65,7 +65,14 @@ export default function (socket, io) {
     io.to(data.respondingTo).emit("call accepted", data.signal);
   });
 
-  socket.on("end call", (id) => {
-    io.to(id).emit("end call");
+  socket.on("end call", (data) => {
+    let { userIdOfUserToRespond, socketIdOfUserToRespond } = data;
+    if (userIdOfUserToRespond) {
+      let userId = userIdOfUserToRespond;
+      let userSocketId = onlineUsers.find((user) => user.userId == userId);
+      io.to(userSocketId.socketId).emit("end call");
+    } else {
+      io.to(socketIdOfUserToRespond).emit("end call");
+    }
   });
 }
