@@ -47,7 +47,11 @@ app.use(
 );
 
 //cors
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CLIENT_ENDPOINT,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 //routes
 app.use("/api/v1", routes);
